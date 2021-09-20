@@ -39,7 +39,11 @@ class BaseObject:
             return None
         else:
             return obj.as_dict()
-
+    def pretty_print(self, data={}):
+        if data == {}:
+            print(json.dumps(self.as_dict(), indent=2, ensure_ascii=False))
+        else:
+            print(json.dumps(data, indent=2, ensure_ascii=False))
 # path: /
 class SketchMeasure(BaseObject):
     @staticmethod
