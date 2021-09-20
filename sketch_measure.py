@@ -128,7 +128,23 @@ class Artboard(BaseObject):
             'height': self.height,
             'imagePath': self.imagePath,
         }
+    
+    def get_layer_by_id(self, layerId):
+        for i in range(len(self.layers)):
+            if self.layers[i].objectID == layerId:
+                return self.layers[i]
+        return None
 
+    def get_overlap_layers(self, layer):
+        res = []
+        if layer == None:
+            return res
+        for i in range(len(self.layers)):
+            if self.layers[i].objectID != layer.objectID and self.layers[i].rect.is_overlap(layer.rect):
+                res.append(self.layers[i])
+        
+        return res
+    
 # path: /SketchMeasure/artboards
 class Layer(BaseObject):
     def __init__(self, data=None):
@@ -256,7 +272,10 @@ class Color(BaseObject):
             'css-rgba': self.cssRgba,
             'ui-color': self.uiColor,
         }
-
+    
+    def get_hex(self):
+        return self.colorHex[:7]
+    
 # path: /SketchMeasure/slices
 # path: /SketchMeasure/artboards/layers
 class Exportable(BaseObject):
@@ -407,7 +426,13 @@ class Rect(BaseObject):
             'maxX': self.maxX,
             'maxY': self.maxY,
         }
-
+    
+    def is_overlap(self, rect):
+        return (
+            not ( self.x + self.width <= rect.x or self.x >= rect.x + rect.width ) and 
+            not ( self.y + self.height <= rect.y or self.y >= rect.y + rect.height)
+        )
+    
 # path: /SketchMeasure/artboards/layers
 class Shadow(BaseObject):
     def __init__(self, data=None):
